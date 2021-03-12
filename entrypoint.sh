@@ -17,21 +17,23 @@ publish_dependencies_as_layer(){
 }
 
 publish_function_code(){
-	echo "Deploying the code itself..."
-	zip -r code.zip . -x \*.git\*
-	aws lambda update-function-code --function-name "${INPUT_LAMBDA_FUNCTION_NAME}" --zip-file fileb://code.zip
+	echo "Deploying the code itself for directory: $1"
+	zip -r code.zip $1 -x \*.git\*
+	aws lambda update-function-code --function-name "$1" --zip-file fileb://code.zip
 }
 
 update_function_layers(){
 	echo "Using the layer in the function..."
-	aws lambda update-function-configuration --function-name "${INPUT_LAMBDA_FUNCTION_NAME}" --layers "${INPUT_LAMBDA_LAYER_ARN}:${LAYER_VERSION}"
+	aws lambda update-function-configuration --function-name "$1" --layers "${INPUT_LAMBDA_LAYER_ARN}:${LAYER_VERSION}"
 }
 
 deploy_lambda_function(){
 	install_zip_dependencies
 	publish_dependencies_as_layer
-	publish_function_code
-	update_function_layers
+	for dir in */; do
+		publish_function_code $dir
+		update_function_layers $dir
+	done
 }
 
 deploy_lambda_function
