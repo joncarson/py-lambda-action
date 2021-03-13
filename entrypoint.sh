@@ -18,7 +18,7 @@ publish_dependencies_as_layer(){
 
 publish_function_code(){
 	echo "Deploying the code itself for directory: ${1::-1}"
-	zip -r -j ${1::-1}.zip $1/* -x \*.git\*
+	zip -r -j ${1::-1}.zip $1* -x \*.git\*
 	aws lambda update-function-code --function-name "${1::-1}" --zip-file fileb://${1::-1}.zip
 	aws lambda update-function-configuration --function-name "${1::-1}" --handler "${1::-1}.lambda_handler" 
 }
