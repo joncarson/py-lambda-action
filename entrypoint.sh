@@ -19,7 +19,7 @@ publish_dependencies_as_layer(){
 publish_function_code(){
 	echo "Deploying the code itself for directory: ${1::-1}"
 	zip -r ${1::-1}.zip $1 -x \*.git\*
-	aws lambda update-function-code --function-name "${1::-1}" --zip-file fileb://${$1::-1}.zip
+	aws lambda update-function-code --function-name "${1::-1}" --zip-file fileb://${1::-1}.zip
 }
 
 update_function_layers(){
@@ -28,8 +28,8 @@ update_function_layers(){
 }
 
 deploy_lambda_function(){
-	install_zip_dependencies
-	publish_dependencies_as_layer
+	#install_zip_dependencies
+	#publish_dependencies_as_layer
 	for dir in */; do
 		publish_function_code $dir
 		update_function_layers $dir
