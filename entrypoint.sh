@@ -20,8 +20,7 @@ publish_function_code(){
 	echo "Deploying the code for directory: ${1::-1}"
 	zip -r -j ${1::-1}.zip $1* -x \*.git\*
 
-	if [["${1:0:1}"=="z"]]
-	then
+	if ["${1:0:1}" = "z"]; then
 
 		for i in {0..499}
 		do
@@ -35,14 +34,12 @@ publish_function_code(){
 	else
 		aws lambda update-function-code --function-name "${1::-1}" --zip-file fileb://${1::-1}.zip
 		aws lambda update-function-configuration --function-name "${1::-1}" --handler "${1::-1}.lambda_handler" 
-	fi
+	fi;
 }
 
 update_function_layers(){
 	echo "Using the layer in the function..."
-	if [["${1:0:1}"=="z"]]
-	then
-
+	if ["${1:0:1}" = "z"]; then
 		for i in {0..499}
 		do
 			function_number="00$i"
@@ -53,7 +50,7 @@ update_function_layers(){
 		done
 	else
 		aws lambda update-function-configuration --function-name "${1::-1}" --handler "${1::-1}.lambda_handler" --layers "${INPUT_LAMBDA_LAYER_ARN}:${LAYER_VERSION}"
-	fi
+	fi;
 }
 
 deploy_lambda_function(){
