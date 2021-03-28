@@ -56,10 +56,13 @@ update_function_layers(){
 deploy_lambda_function(){
 	#install_zip_dependencies
 	#publish_dependencies_as_layer
-	for dir in */; do
-		publish_function_code $dir
-		#update_function_layers $dir
-	done
+	if [ "${BUILD_TYPE}" = "code" ]; then
+		for dir in */; do
+			publish_function_code $dir
+			#update_function_layers $dir
+		done
+	elif [ "${BUILD_TYPE}" = "layer" ]; then
+	fi;
 }
 
 deploy_lambda_function
