@@ -59,9 +59,11 @@ deploy_lambda_function(){
 	if [ "${BUILD_TYPE}" = "code" ]; then
 		for dir in */; do
 			publish_function_code $dir
-			#update_function_layers $dir
 		done
 	elif [ "${BUILD_TYPE}" = "layer" ]; then
+		for dir in */; do
+			update_function_layers $dir
+		done
 	fi;
 }
 
