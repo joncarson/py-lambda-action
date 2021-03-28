@@ -20,7 +20,7 @@ publish_function_code(){
 	echo "Deploying the code for directory: ${1::-1}"
 	zip -r -j ${1::-1}.zip $1* -x \*.git\*
 
-	if ["${1:0:1}" = "z"]
+	if [["${1:0:1}"=="z"]]
 	then
 
 		for i in {0..499}
@@ -40,7 +40,7 @@ publish_function_code(){
 
 update_function_layers(){
 	echo "Using the layer in the function..."
-	if ["${1:0:1}" = "z"]
+	if [["${1:0:1}"=="z"]]
 	then
 
 		for i in {0..499}
