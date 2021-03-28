@@ -39,7 +39,7 @@ publish_function_code(){
 
 update_function_layers(){
 	echo "Using the layer in the function..."
-	if [ "${1:0:1}" = "z" ]; then
+	if [ "${1:0:1}" = "z"]; then
 		for i in {0..499}
 		do
 			function_number="00$i"
@@ -51,8 +51,15 @@ update_function_layers(){
 	else
 		aws lambda update-function-configuration --function-name "${1::-1}" --handler "${1::-1}.lambda_handler" --layers "${INPUT_LAMBDA_LAYER_ARN}:${LAYER_VERSION}"
 	fi;
-}
 
+deploy_lambda_function(){
+	#install_zip_dependencies
+	#publish_dependencies_as_layer
+	for dir in */; do
+		publish_function_code $dir
+		#update_function_layers $dir
+	done
+}
 
 deploy_lambda_function
 echo "Done."
