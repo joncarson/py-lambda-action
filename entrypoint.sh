@@ -21,16 +21,17 @@ publish_function_code(){
 	zip -r -j ${1::-1}.zip $1* -x \*.git\*
 
 	if [ "${1:0:1}" = "z" ]; then
-
-		for i in {0..499}
-		do
-			function_number="00$i"
-			function_number=${function_number:(-3)}
-			function_name=${1::-1}_$function_number
-			echo "Deploying dynamic code itself for function: $function_name"
-			aws lambda update-function-code --function-name "$function_name" --zip-file fileb://${1::-1}.zip
-			aws lambda update-function-configuration --function-name "$function_name" --handler "${1::-1}.lambda_handler" 	
-		done
+		if [ "${INCLUDE_Z}" = "true" ]; then
+			for i in {0..499}
+			do
+				function_number="00$i"
+				function_number=${function_number:(-3)}
+				function_name=${1::-1}_$function_number
+				echo "Deploying dynamic code itself for function: $function_name"
+				aws lambda update-function-code --function-name "$function_name" --zip-file fileb://${1::-1}.zip
+				aws lambda update-function-configuration --function-name "$function_name" --handler "${1::-1}.lambda_handler" 	
+			done
+		fi;
 	else
 		aws lambda update-function-code --function-name "${1::-1}" --zip-file fileb://${1::-1}.zip
 		aws lambda update-function-configuration --function-name "${1::-1}" --handler "${1::-1}.lambda_handler" 
@@ -40,14 +41,16 @@ publish_function_code(){
 update_function_layers(){
 	echo "Using the layer in the function..."
 	if [ "${1:0:1}" = "z" ]; then
-		for i in {0..499}
-		do
-			function_number="00$i"
-			function_number=${function_number:(-3)}
-			function_name=${1::-1}_$function_number
-			echo "Deploying dynamic layer for function: $function_name"
-			aws lambda update-function-configuration --function-name "$function_name" --handler "${1::-1}.lambda_handler" --layers "${INPUT_LAMBDA_LAYER_ARN}:${LAYER_VERSION}"
-		done
+		if [ "${INCLUDE_Z}" = "true" ]; then
+			for i in {0..499}
+			do
+				function_number="00$i"
+				function_number=${function_number:(-3)}
+				function_name=${1::-1}_$function_number
+				echo "Deploying dynamic layer for function: $function_name"
+				aws lambda update-function-configuration --function-name "$function_name" --handler "${1::-1}.lambda_handler" --layers "${INPUT_LAMBDA_LAYER_ARN}:${LAYER_VERSION}"
+			done
+		fi;
 	else
 		aws lambda update-function-configuration --function-name "${1::-1}" --handler "${1::-1}.lambda_handler" --layers "${INPUT_LAMBDA_LAYER_ARN}:${LAYER_VERSION}"
 	fi;
